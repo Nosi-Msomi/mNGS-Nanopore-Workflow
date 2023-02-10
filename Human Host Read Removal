@@ -1,0 +1,38 @@
+ #Samtools may be used to remove human-derived reads, leaving behind only microbial reads
+ 
+ #To map reads to human genome, ensure downloaded the lastest human ref genome from NCBI 
+
+for f in *fastq.gz                                                                  
+do
+minimap2 -ax map-ont ~/path/to/human_genome/GRCh38_latest_genomic.fna ~/path/to/sequences/$f > ~/path/to/output_folder/$f.sam
+done
+
+#To convert sam to bam
+
+for f in *.sam                                                                      
+do
+samtools view -S -b $f > $f.bam
+done
+
+#To discard mapped reads/ only keep unmapped reads
+
+for f in *bam                                                                       
+do
+samtools view -b -f4 $f > $f_unmapped.bam
+done
+
+#To change file extension back .bam 
+
+find . -iname "*.fastq.gz.sam.bam" -exec bash -c 'mv "$0" "${0%\.fastq.gz.sam.bam}.bam"' {} \;
+
+#To convert bam to fastq 
+
+for f in *bam
+do samtools fastq $f > fastq/$f.fastq
+done
+
+#Change file extension to .fastq 
+
+find . -iname "*.bam.fastq" -exec bash -c 'mv "$0" "${0%\.bam.fastq}.fastq"' {} \;
+
+
