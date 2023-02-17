@@ -1,0 +1,23 @@
+# Taxonomic Classification was performed using Kraken2
+#A customised reference database was constructed using the building function and downloading the following libraries. 
+
+kraken2-build --download-library "protozoa" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-library "fungi" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-library "bacteria" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-library "archaea" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-library "viral" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-library "UniVec_Core" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-library "human" --threads 24 --db KRAKEN2_DB
+kraken2-build --download-taxonomy --db KRAKEN2_DB
+kraken2-build --build --db KRAKEN2_DB --threads 24
+
+
+#The following code was used to run Kraken2 
+
+for f in *.fastq.gz
+do
+        kraken2 $f --db /local/kraken/extended -–minimum-hit-groups 4 --confidence 0.05 --output ${f}_output.txt --report ${f}_report.txt
+done
+
+
+#Pavian was then used to visualise the kraken reports 
